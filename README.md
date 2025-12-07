@@ -1,125 +1,62 @@
-# Slim PHP to Express.js Transition – Learning Project
+﻿# Slim PHP to Express.js - Learning Project
 
-This repository documents my learning process while transitioning from Slim PHP (a micro PHP framework) to Node.js + Express.js for backend API development.
+This repository documents moving familiar Slim PHP REST API patterns into a Node.js + Express.js stack.
 
-## 🎯 Goal
+## Goal
+- Compare Slim-style routing/controllers/middleware patterns with their Express counterparts.
+- Keep the code modular and easy to extend while learning the new ecosystem.
 
-As a developer already experienced in Slim PHP, my aim was to adopt Express.js by comparing the concepts I'm familiar with in Slim and implementing their equivalents in Express.
+## What I Learned
+- Routing parity: `$app->get('/path')` maps to `app.get('/path')`.
+- Separating controllers and middleware instead of monolithic route files.
+- JWT authentication with `jsonwebtoken` (create/verify tokens).
+- Parsing request bodies and headers in Express (`req.body`, `req.headers.authorization`).
+- Organizing code into folders for controllers, routes, middleware, and config.
 
-## ✅ What I Learned
-
-- ✅ **Routing System**  
-  Reproduced `GET`, `POST`, `PUT`, `DELETE` routes in Express.  
-  Compared Slim's `$app->get('/path')` to `app.get('/path')`.
-
-- ✅ **Controller & Middleware Separation**  
-  Separated route definitions and business logic using controllers.  
-  Adopted Express's modular `require/export` structure instead of Slim's monolithic routing.
-
-- ✅ **JWT Authentication**  
-  Learned to use `jsonwebtoken` to create and verify tokens.  
-  Compared it to Slim's `JWT::encode()` / `JWT::decode()` structure.
-
-- ✅ **Request Body & Headers**  
-  Used `req.body` and `req.headers['authorization']` in Express.  
-  Compared to Slim's `getParsedBody()` and `getHeaderLine()` methods.
-
-- ✅ **Modular Structure**  
-  Organized the project into folders like `routes/`, `controllers/`, and `middleware/`.  
-  Replaced Slim’s single-file logic with a clean, scalable architecture.
-
-## 🛠 Technologies Used
-
+## Technologies
 - Node.js
 - Express.js
 - JSON Web Token (JWT)
 - bcryptjs
 
-## 📁 Project Structure
-
+## Project Structure
 ```
 project/
-├── controllers/
-│   └── notesController.js
-│   └── usersController.js
-├── routes/
-│   └── notes.js
-│   └── users.js
-├── middleware/
-│   └── authMiddleware.js
-└── server.js
+  controllers/
+    notesController.js
+    usersController.js
+  middleware/
+    authMiddleware.js
+    errorHandler.js
+    requestLogger.js
+    validation.js
+  routes/
+    notes.js
+    users.js
+  config/
+    config.js
+  tests/
+    notes.test.js
+  server.js
+  .env.example
 ```
 
-## 💡 Why This Project?
+## Setup & Usage
+1. Copy `.env.example` to `.env` and set a secure `JWT_SECRET`.
+2. Install dependencies if needed: `npm install`.
+3. Start the API: `npm start` (Slim equivalent: `php -S localhost:3000`).
+4. Run smoke tests: `npm test` (Node's built-in `node --test`).
 
-To move from PHP to JS-based backend development without losing architectural clarity. I wanted to mirror what I already know in Slim and apply it in the JS ecosystem.
+Notes:
+- All `/notes` endpoints require `Authorization: Bearer <token>`.
+- Notes are stored per authenticated user (in-memory) so users cannot read or mutate others' notes.
+- Missing/invalid payloads return `400` with a JSON error message.
 
-## 📚 Note
+## TR Ozet
+- Slim'deki routing/controller/middleware ayrimlarinin Express karsiliklari gosterildi.
+- JWT dogrulamasi eklendi; not islemleri token olmadan yapilamaz.
+- Notlar kullanici bazli tutulur (bellek ici); yanlis/eksik istekler 400 doner.
 
-This project is for learning purposes only. Data is stored in memory. MongoDB/MySQL support may be added in future versions.
+## Note
+This project is for learning purposes only; data lives in memory. Future iterations can add a database (MongoDB/MySQL).
 
----
-
-A good reference for developers switching from Slim PHP to Express.js.
-
----
-
-# Slim PHP'den Express.js'e Geçiş – Öğrenme Projesi
-
-Bu proje, Slim PHP ile REST API geliştirmiş bir backend geliştirici olarak Node.js + Express.js'e geçiş sürecimi belgelemektedir.
-
-## 🎯 Amaç
-
-Slim PHP'deki alışık olduğum backend yapılarını Express.js'e birebir karşılaştırarak yeniden oluşturmak, yeni teknolojiyi özümseyerek kullanabilir hale gelmekti.
-
-## ✅ Öğrendiklerim
-
-- ✅ **Routing Sistemi**  
-  `GET`, `POST`, `PUT`, `DELETE` route'larını Express’te yeniden oluşturdum  
-  `$app->get('/path')` yapısını `app.get('/path')` ile kıyasladım
-
-- ✅ **Controller-Middleware Ayrımı**  
-  Route tanımı ile iş mantığını ayırdım  
-  Monolitik Slim yapısından modüler Express yapısına geçtim
-
-- ✅ **JWT ile Kimlik Doğrulama**  
-  `jsonwebtoken` kullanarak token üretme/doğrulama işlemlerini öğrendim  
-  Slim'deki `JWT::encode()` / `JWT::decode()` yapılarına denk gelen mantığı uyguladım
-
-- ✅ **Request Body ve Header İşlemleri**  
-  `req.body` ve `req.headers['authorization']` kullanımını öğrendim  
-  Slim’deki `getParsedBody()` ve `getHeaderLine()` fonksiyonlarıyla karşılaştırdım
-
-- ✅ **Modüler Yapı Kurma**  
-  `routes/`, `controllers/`, `middleware/` klasörleriyle düzenli yapı kurdum  
-  Slim’in tek dosyalı sisteminden, okunabilirliği yüksek yapıya geçtim
-
-## 🛠 Kullanılan Teknolojiler
-
-- Node.js
-- Express.js
-- JSON Web Token (JWT)
-- bcryptjs
-
-## 📁 Proje Yapısı
-
-```
-project/
-├── controllers/
-│   └── notesController.js
-│   └── usersController.js
-├── routes/
-│   └── notes.js
-│   └── users.js
-├── middleware/
-│   └── authMiddleware.js
-└── server.js
-```
-
-## 💡 Neden Bu Çalışma?
-
-PHP'den JavaScript'e backend geçişi yaparken mantıksal alışkanlıklarımı kaybetmeden aynı yapıları JS ile üretmek istedim. Slim'de bildiğim her şeyi Express ile yeniden kurguladım.
-
-## 📚 Not
-
-Bu proje tamamen öğrenme amaçlıdır. Veriler bellekte tutulmaktadır. İlerleyen çalışmalarda MongoDB veya MySQL desteği eklenecektir.
