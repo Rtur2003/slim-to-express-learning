@@ -1,60 +1,42 @@
-// Uygulamanın Giriş Noktası
-
-const express = require('express'); 
-// Slim'de: use Slim\App; → $app = new App();
-
-const app = express(); 
-// Slim'deki: $app = new \Slim\App();
-
-const PORT = 3000;
-// Slim'de genelde `php -S localhost:3000` komutu ile port belirlenir.
-
-
-// ===========================
-//         MIDDLEWARE
-// ===========================
-
-app.use(express.json());
-// Slim'de: $request->getParsedBody();
-// Express'te gelen JSON veriyi req.body ile alabilmek için bu middleware gereklidir.
-
-
-// ===========================
-//           ROUTES
-// ===========================
+// Uygulamanın giriş noktası (Slim'deki public/index.php benzeri)
+const express = require('express');
+const { PORT } = require('./config/config');
 
 const notesRoutes = require('./routes/notes');
 const usersRoutes = require('./routes/users');
+const errorHandler = require('./middleware/errorHandler');
+const requestLogger = require('./middleware/requestLogger');
 
-// Slim'de: tüm route tanımları ya doğrudan bu dosyada yapılır
-// ya da `require 'routes/notes.php';` gibi dosya içeri aktarılır
+const app = express();
 
-app.use('/notes', notesRoutes);
-// Slim karşılığı: $app->group('/notes', function() { ... });
+// Body parse (Slim: $request->getParsedBody())
+app.use(express.json());
+// Basit istek loglama; Slim'de middleware ile benzer şekilde yapılır.
+app.use(requestLogger);
 
-app.use('/users', usersRoutes);
-// Slim karşılığı: $app->group('/users', function() { ... });
-
-
-// ===========================
-//         GİRİŞ ENDPOINT
-// ===========================
-
+// Sağlık kontrolü
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
-// Slim karşılığı: 
-// $app->get('/', function ($request, $response) {
-//     return $response->write('API is running...');
-// });
 
+// Route grupları (Slim: $app->group('/notes', ...))
+app.use('/notes', notesRoutes);
+app.use('/users', usersRoutes);
 
-// ===========================
-//        SUNUCUYU BAŞLAT
-// ===========================
-
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+// Bulunmayan endpoint'ler için standart cevap
+app.use((req, res) => {
+  res.status(404).json({ message: 'Endpoint not found' });
 });
-// Slim'de sunucu terminalden `php -S localhost:3000` komutu ile başlatılır.
-// Express'te ise node ile başlatılır: `node server.js`
+
+// Merkezi hata yakalayıcı
+app.use(errorHandler);
+
+// Ana dosya olarak çalıştırıldığında sunucuyu ayağa kaldır
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
+  });
+}
+
+// Testler veya başka modüller için app'i export et
+module.exports = app;
