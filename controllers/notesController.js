@@ -1,11 +1,6 @@
 let notes = [];
 let nextNoteId = 1;
 
-const parseNoteId = (value) => {
-  const id = Number.parseInt(value, 10);
-  return Number.isNaN(id) ? null : id;
-};
-
 // ========================
 //      GET /notes
 // ========================
@@ -36,11 +31,8 @@ exports.addNote = (req, res) => {
 //     PUT /notes/:id
 // ========================
 exports.updateNote = (req, res) => {
-  const noteId = parseNoteId(req.params.id);
-
-  if (!noteId) {
-    return res.status(400).json({ message: 'Geçersiz not ID.' });
-  }
+  // req.params.id is already validated and parsed by validateNoteIdParam middleware
+  const noteId = req.params.id;
 
   const note = notes.find((n) => n.id === noteId && n.ownerId === req.user.id);
 
@@ -59,11 +51,8 @@ exports.updateNote = (req, res) => {
 //     DELETE /notes/:id
 // ========================
 exports.deleteNote = (req, res) => {
-  const noteId = parseNoteId(req.params.id);
-
-  if (!noteId) {
-    return res.status(400).json({ message: 'Geçersiz not ID.' });
-  }
+  // req.params.id is already validated and parsed by validateNoteIdParam middleware
+  const noteId = req.params.id;
 
   const index = notes.findIndex((n) => n.id === noteId && n.ownerId === req.user.id);
 

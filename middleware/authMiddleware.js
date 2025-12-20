@@ -20,6 +20,6 @@ module.exports = function authMiddleware(req, res, next) {
     req.user = user;
     return next();
   } catch (err) {
-    return res.status(403).json({ message: 'Token geÇõersiz.' });
+    return res.status(403).json({ message: 'Token geçersiz.' });
   }
 };

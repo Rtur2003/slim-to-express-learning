@@ -3,7 +3,10 @@ module.exports = function requestLogger(req, res, next) {
 
   res.on('finish', () => {
     const duration = Date.now() - start;
-    console.log(`${req.method} ${req.originalUrl} -> ${res.statusCode} (${duration}ms)`);
+    const timestamp = new Date().toISOString();
+    const statusColor = res.statusCode >= 400 ? '❌' : '✓';
+    
+    console.log(`[${timestamp}] ${statusColor} ${req.method} ${req.originalUrl} → ${res.statusCode} (${duration}ms)`);
   });
 
   next();
