@@ -4,7 +4,7 @@ const http = require('node:http');
 
 // Ensure config can load without external env files during test runs
 process.env.NODE_ENV = 'test';
-process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret';
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret-at-least-32-chars-long!';
 
 const app = require('../server');
 
